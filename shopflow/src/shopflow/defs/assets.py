@@ -1,7 +1,7 @@
 """
 Dagster passes asset values between dependent assets using the configured I/O manager.
 In this project, the default filesystem I/O manager stores materialized asset data so downstream
-assets like cleaned_orders and order_summary can load upstream results automatically.
+assets can load upstream results automatically.
 """
 
 import csv
@@ -11,6 +11,13 @@ from dagster import asset
 @asset
 def raw_orders() -> list[dict]:
     with open("data/orders.csv", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        return [row for row in reader]
+
+
+@asset
+def raw_products() -> list[dict]:
+    with open("data/products.csv", newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         return [row for row in reader]
 
@@ -72,5 +79,26 @@ def order_summary(cleaned_orders: list[dict]) -> dict:
     }
 
     print("RESULT:", result)
-
     return result
+
+
+@asset
+def enriched_orders(cleaned_orders: list[dict], raw_products: list[dict]) -> list[dict]:
+    product_lookup = {
+        int(product["product_id"]): product for product in raw_products
+    }
+
+    enriched = []
+
+    for order in cleaned_orders:
+        product = product_lookup.get(order["product_id"])
+
+        enriched_row = {
+            **order,
+            "product_name": product["product_name"] if product else None,
+            "category": product["category"] if product else None,
+        }
+
+        enriched.append(enriched_row)
+
+    return enriched

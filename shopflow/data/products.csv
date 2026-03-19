@@ -1,0 +1,16 @@
+product_id,product_name,category
+1,Laptop,Electronics
+2,Phone,Electronics
+3,Headphones,Electronics
+4,Keyboard,Electronics
+5,Mouse,Electronics
+6,Monitor,Electronics
+7,Tablet,Electronics
+8,Charger,Accessories
+9,USB Cable,Accessories
+10,Power Bank,Accessories
+11,Camera,Electronics
+12,Speaker,Electronics
+13,Smartwatch,Electronics
+14,Printer,Electronics
+15,Router,Electronics
